@@ -8,20 +8,14 @@ const candidateValidator = [
     .withMessage(messages.notEmpty)
     .isEmail()
     .withMessage(messages.inValidEmail),
-  body("password")
+
+  body("phoneNumber")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
     .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
-  body("contactNumber")
-    .exists()
-    .withMessage(messages.notPresent)
-    .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .isLength({ min: 8 })
+    .withMessage(messages.invalidLength(8)),
     body("organization")
     .exists()
     .withMessage(messages.notPresent)
@@ -33,37 +27,27 @@ const candidateValidator = [
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .withMessage(messages.notEmpty),
     body("experience")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .withMessage(messages.notEmpty),
     body("country")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .withMessage(messages.notEmpty),
     body("city")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .withMessage(messages.notEmpty),
     body("personalAddress")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
     .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
     
 ];
 module.exports = {
