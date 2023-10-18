@@ -20,9 +20,7 @@ const candidateValidator = [
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
+    .withMessage(messages.notEmpty),
     body("jobTitle")
     .exists()
     .withMessage(messages.notPresent)
