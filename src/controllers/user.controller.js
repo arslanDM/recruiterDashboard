@@ -1,4 +1,4 @@
-  const { async } = require("fast-glob");
+const { async } = require("fast-glob");
 const errorHelper = require("../helper/error.helper");
 const userModel = require("../models").user;
 const candidateModel = require("../models").candidate;
@@ -34,7 +34,6 @@ module.exports.createUser = async (req, res, next) => {
       email,
       role,
     });
-
     let message = "User Created Succefully";
     return errorHelper.success(res, newUser, message);
   } catch (error) {
@@ -54,19 +53,29 @@ module.exports.createCandidate = async (req, res, next) => {
 };
 module.exports.createEmployer = async (req, res, next) => {
   try {
-    const employer=await employerModel.create(req.body);
-     const employerId=employer._id;
-     const timeSlotData={
+    const employer = await employerModel.create(req.body);
+    const employerId = employer._id;
+    const timeSlotData = {
       employerId,
-      ...req.body
-     }
+      ...req.body,
+    };
     const createdTimeSlot = await timeSlotModel.create(timeSlotData);
-    if(createdTimeSlot){
-      let message="Employer Created Succefully"
-    return errorHelper.success(res, '', message);
-    //res.status(201).json(createdTimeSlot);
+    if (createdTimeSlot) {
+      let message = "Employer Created Succefully";
+      return errorHelper.success(res, "", message);
+      //res.status(201).json(createdTimeSlot);
     }
- 
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getStaff = async (req, res, next) => {
+  try {
+    const getStaff = await userModel.find({role:'recruiter'}).lean();
+    if (getStaff) {
+      return errorHelper.success(res, getStaff);
+    }
   } catch (error) {
     next(error);
   }
@@ -83,7 +92,10 @@ module.exports.getCandidate = async (req, res, next) => {
 };
 module.exports.getEmployer = async (req, res, next) => {
   try {
-    const getEmployer = await timeSlotModel.find({}).populate('employerId').lean();
+    const getEmployer = await timeSlotModel
+      .find({})
+      .populate("employerId")
+      .lean();
     if (getEmployer) {
       return errorHelper.success(res, getEmployer);
     }

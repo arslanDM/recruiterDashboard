@@ -9,7 +9,7 @@ router.post(
   "/createUser",
   authSignUpValidator,
   request,
-  restrictTo(["admin"]),
+  // restrictTo(["admin"]),
   controller.createUser
 );
 router.post(
@@ -26,6 +26,7 @@ router.post(
   request,
   controller.createEmployer
 );
+router.get("/getStaff",controller.getStaff);
 router.get("/getCandidate", controller.getCandidate);
 router.get("/getEmployer",controller.getEmployer);
 router.get("/", controller.getUser);

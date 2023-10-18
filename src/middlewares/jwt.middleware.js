@@ -17,6 +17,7 @@ const verifyToken = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  
     const user = await UserModel.findOne({
       _id: new mongoose.Types.ObjectId(decoded.id),
     }).lean();

@@ -35,12 +35,7 @@ candidateSchema = new Schema(
     personalAddress: {
       type: String,
     },
-    status: {
-      type: String,
-      enum: ["in-process", "reject","offer sent", "hire"],
-    },
   },
-
   {
     timestamps: true,
   }
