@@ -26,10 +26,12 @@ router.post(
   request,
   controller.createEmployer
 ); 
+router.post("/createInterview",controller.createInterview)
 router.post("/createJob",controller.createJob)
 router.get("/getStaff",controller.getStaff);
 router.get("/getCandidate", controller.getCandidate);
 router.get("/getEmployer",controller.getEmployer);
+router.get("/getJob",controller.getJob)
 router.get("/", controller.getUser);
 router.delete("/deleteProfile/:id", controller.deleteProfile);
 module.exports = { prefix: "user", router };

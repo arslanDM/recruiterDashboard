@@ -1,7 +1,7 @@
 const jobSchema = new Schema({
   employerId: {
     type: mongoose.Types.ObjectId,
-    ref: "Employer", // Reference to an employer model
+    ref: "employer", // Reference to an employer model
   },
   jobDescription: String,
   dates: [
