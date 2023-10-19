@@ -25,7 +25,8 @@ router.post(
   employerValidator,
   request,
   controller.createEmployer
-);
+); 
+router.post("/createJob",controller.createJob)
 router.get("/getStaff",controller.getStaff);
 router.get("/getCandidate", controller.getCandidate);
 router.get("/getEmployer",controller.getEmployer);

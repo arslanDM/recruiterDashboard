@@ -8,9 +8,6 @@ employerSchema = new Schema(
     name: {
       type: String,
     },
-    jobDescription: {
-      type: String,
-    },
   },
   {
     timestamps: true,

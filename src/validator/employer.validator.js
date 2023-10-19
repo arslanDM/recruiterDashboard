@@ -13,14 +13,14 @@ const employerValidator = [
     .withMessage(messages.notPresent)
     .notEmpty()
     .withMessage(messages.notEmpty),
-  body("jobDescription")
+];
+const jobValidator = [
+  body("employerId")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
-    .withMessage(messages.notEmpty)
-    .isLength({ min: 6 })
-    .withMessage(messages.invalidLength(6)),
-  body("cv")
+    .withMessage(messages.notEmpty),
+  body("jobDescription")
     .exists()
     .withMessage(messages.notPresent)
     .notEmpty()
@@ -38,7 +38,7 @@ const employerValidator = [
       return value.every((item) => item.startTime);
     })
     .withMessage("Each timeSlot should have a startTime"),
-    body("timeSlot")
+  body("timeSlot")
     .isArray()
     .withMessage("timeSlot should be an array")
     .custom((value) => {
@@ -46,7 +46,7 @@ const employerValidator = [
       return value.every((item) => item.endTime);
     })
     .withMessage("Each timeSlot should have a endTime"),
-    body("timeSlot")
+  body("timeSlot")
     .isArray()
     .withMessage("timeSlot should be an array")
     .custom((value) => {
@@ -57,4 +57,5 @@ const employerValidator = [
 ];
 module.exports = {
   employerValidator,
+  jobValidator,
 };

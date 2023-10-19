@@ -1,8 +1,11 @@
-timeSlotSchema = new Schema(
+JobSchema = new Schema(
   {
     employerId: {
       type: mongoose.Types.ObjectId,
       ref: "employer",
+    },
+    jobDescrption: {
+      type: String,
     },
     date: {
       type: Date,
@@ -15,11 +18,10 @@ timeSlotSchema = new Schema(
         status: String,
       },
     ],
-
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("timeSlot", timeSlotSchema);
+module.exports = mongoose.model("Job", JobSchema);

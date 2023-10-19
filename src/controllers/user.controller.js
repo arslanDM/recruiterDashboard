@@ -2,8 +2,8 @@ const { async } = require("fast-glob");
 const errorHelper = require("../helper/error.helper");
 const userModel = require("../models").user;
 const candidateModel = require("../models").candidate;
+const jobModel=require("../models").job;
 const employerModel = require("../models").employer;
-const timeSlotModel = require("../models").timeSlot;
 const { encryptPassword, comparePassword } = require("../helper/bcrypt.helper");
 module.exports.getUser = async (req, res, next) => {
   const { user } = req;
@@ -51,16 +51,27 @@ module.exports.createCandidate = async (req, res, next) => {
     next(error);
   }
 };
+module.exports.createJob=async(req,res,next)=>{
+  try {
+    const createJob = await jobModel.create(req.body);
+    if (createJob) {
+      let message = "Job Created Succefully";
+      return errorHelper.success(res, createJob, message);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports.createEmployer = async (req, res, next) => {
   try {
     const employer = await employerModel.create(req.body);
-    const employerId = employer._id;
-    const timeSlotData = {
-      employerId,
-      ...req.body,
-    };
-    const createdTimeSlot = await timeSlotModel.create(timeSlotData);
-    if (createdTimeSlot) {
+    // const employerId = employer._id;
+    // const jobData = {
+    //   employerId,
+    //   ...req.body,
+    // };
+    // const createdTimeSlot = await jobModel.create(jobData);
+    if (employer) {
       let message = "Employer Created Succefully";
       return errorHelper.success(res, "", message);
       //res.status(201).json(createdTimeSlot);
@@ -69,7 +80,17 @@ module.exports.createEmployer = async (req, res, next) => {
     next(error);
   }
 };
-
+module.exports.createJob=async(req,res,next)=>{
+  try {
+    const createJob = await jobModel.create(req.body);
+    if (createJob) {
+      let message = "Job Created Succefully";
+      return errorHelper.success(res, createJob, message);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports.getStaff = async (req, res, next) => {
   try {
     const getStaff = await userModel.find({role:'recruiter'}).lean();
