@@ -113,9 +113,8 @@ module.exports.getCandidate = async (req, res, next) => {
 };
 module.exports.getEmployer = async (req, res, next) => {
   try {
-    const getEmployer = await timeSlotModel
+    const getEmployer = await employerModel
       .find({})
-      .populate("employerId")
       .lean();
     if (getEmployer) {
       return errorHelper.success(res, getEmployer);

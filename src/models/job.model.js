@@ -1,27 +1,25 @@
-JobSchema = new Schema(
-  {
-    employerId: {
-      type: mongoose.Types.ObjectId,
-      ref: "employer",
-    },
-    jobDescrption: {
-      type: String,
-    },
-    date: {
-      type: Date,
-    },
-    timeSlot: [
-      {
-        startTime: String,
-        endTime: String,
-        timeZone: String,
-        status: String,
-      },
-    ],
+const jobSchema = new Schema({
+  employerId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Employer", // Reference to an employer model
   },
-  {
-    timestamps: true,
-  }
-);
+  jobDescription: String,
+  dates: [
+    {
+      date: {
+        type: Date,
+        required: true,
+      },
+      timeSlots: [
+        {
+          startTime: String,
+          endTime: String,
+          timeZone: String,
+          status: String,
+        },
+      ],
+    },
+  ],
+});
 
-module.exports = mongoose.model("Job", JobSchema);
+module.exports = mongoose.model("Job", jobSchema);
