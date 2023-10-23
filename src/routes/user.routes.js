@@ -33,5 +33,8 @@ router.get("/getCandidate", controller.getCandidate);
 router.get("/getEmployer",controller.getEmployer);
 router.get("/getJob",controller.getJob)
 router.get("/", controller.getUser);
+router.get("/feedback",controller.getAllFeedback);
+router.get("/getFeedbackbyId/:id",controller.getFeedbackbyId);
+
 router.delete("/deleteProfile/:id", controller.deleteProfile);
 module.exports = { prefix: "user", router };

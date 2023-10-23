@@ -7,7 +7,7 @@ const employerModel = require("../models").employer;
 const interviewModel = require("../models").interview;
 const feedbackModel = require("../models").feedback;
 const { encryptPassword, comparePassword } = require("../helper/bcrypt.helper");
-const {sendEmail} = require("./../helper/mail.helper");
+const { sendEmail } = require("./../helper/mail.helper");
 module.exports.getUser = async (req, res, next) => {
   const { user } = req;
   try {
@@ -40,7 +40,7 @@ module.exports.createUser = async (req, res, next) => {
     let message = "User Created Succefully";
     return errorHelper.success(res, newUser, message);
   } catch (error) {
-    next(error);  
+    next(error);
   }
 };
 module.exports.createCandidate = async (req, res, next) => {
@@ -86,9 +86,10 @@ module.exports.createInterview = async (req, res, next) => {
         startTime: req.body.feedbackSlot.startTime,
         endTime: req.body.feedbackSlot.endTime,
         remarks: "",
+        status: "in-process",
       },
     ],
-    status: "in-process",
+
     isSubmitted: false,
   };
   const candidate = await candidateModel.findById(req.body.candidateId).lean();
@@ -96,7 +97,7 @@ module.exports.createInterview = async (req, res, next) => {
   const employer = await employerModel.findById(req.body.employerId).lean();
 
   await jobModel.updateOne(
-    { 
+    {
       "dates._id": req.body.date,
       "dates.timeSlots._id": req.body.selectedSlot,
     },
@@ -115,33 +116,44 @@ module.exports.createInterview = async (req, res, next) => {
   try {
     const createInterview = await interviewModel.create(req.body);
     const feedbackCreate = await feedbackModel.create(feedbackData);
-    const feedbackId=feedbackCreate._id;
-    // const existingFeedback = await feedbackModel.findOne({
-    //   employerId: req.body.employerId,
-    //   candidateId: req.body.candidateId,
-    // });
-    // if (existingFeedback) {
-    //   existingFeedback.history.push({
-    //     date: req.body.feedbackSlot.date,
-    //     startTime: req.body.feedbackSlot.startTime,
-    //     endTime: req.body.feedbackSlot.endTime,
-    //     remarks: req.body.feedbackSlot.remarks,
-    //   });
-    //   existingFeedback.status='';
-    //   await feedbackModel.save(existingFeedback);
-    // } else {
+    const feedbackId = feedbackCreate._id;
+
     if (createInterview && feedbackCreate) {
       const interviewDetails = {
         date: req.body.feedbackSlot.date,
         startTime: req.body.feedbackSlot.startTime,
         endTime: req.body.feedbackSlot.endTime,
-        interViewLink:req.body.interviewLink
+        interViewLink: req.body.interviewLink,
       };
-      sendEmail(candidate.email, employer.email ,interviewDetails,feedbackId);
+      sendEmail(candidate.email, employer.email, interviewDetails, feedbackId);
       let message = "Interview Created Succefully";
       return errorHelper.success(res, createInterview, message);
     }
-    //}
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports.getAllFeedback = async (req, res, next) => {
+  try {
+    const allFeedback = await feedbackModel
+      .find({})
+      .populate("employerId")
+      .populate("candidateId")
+      .lean();
+    return errorHelper.success(res, allFeedback);
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports.getFeedbackbyId=async(req,res,next)=>{
+  try {
+    const id=req.params.id;
+    const feedbackById = await feedbackModel
+      .findOne({'_id':id})
+      .populate("employerId")
+      .populate("candidateId")
+      .lean();
+    return errorHelper.success(res, feedbackById);
   } catch (error) {
     next(error);
   }

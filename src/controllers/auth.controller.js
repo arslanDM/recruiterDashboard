@@ -3,6 +3,10 @@ const { signToken } = require("../helper/jwt.helper");
 const errorHelper = require("../helper/error.helper");
 const userModel = require("../models").user;
 const { sendEmail } = require("../helper/mail.helper");
+const { async } = require("fast-glob");
+const feedbackModel = require("../models/feedback.model");
+const candidateModel = require("../models").candidate;
+const employerModel = require("../models").employer;
 module.exports.signUp = async (req, res, next) => {
   // try {
   //   const {
@@ -65,7 +69,6 @@ module.exports.login = async (req, res, next) => {
     let message = "User Logged In Successfully!";
     return errorHelper.success(res, responseData, message);
   } catch (error) {
-    
     next(error);
   }
 };
@@ -107,3 +110,52 @@ module.exports.resetPassword = async (req, res, next) => {
   let message = "Password Updated Successfully";
   return errorHelper.success(res, message);
 };
+module.exports.getFeedbackById = async (req, res, next) => {
+  try {
+    const feedbackId = req.params.id;
+    const feedback = await feedbackModel.findById(feedbackId).lean();
+    const { candidateId, employerId } = feedback;
+    const candidate = await candidateModel
+      .findById(candidateId)
+      .select("name")
+      .lean();
+    const employer = await employerModel
+      .findById(employerId)
+      .select("name")
+      .lean();
+    const feedbackStatus = await feedbackModel
+      .findById(feedbackId)
+      .select("status isSubmitted")
+      .lean();
+    const response = {
+      candidate,
+      employer,
+      feedbackStatus,
+    };
+    return errorHelper.success(res, response, "");
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports.createFeedback = async (req, res, next) => {
+  try {
+    const existingFeedback = await feedbackModel.findOne({ _id: req.params.id });
+
+    if (!existingFeedback) {
+      let message = "Feedback Not exist";
+      return errorHelper.requestfailure(res, message);
+    }
+    existingFeedback.history.push({
+      date: req.body.date,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      remarks: req.body.remarks,
+      status: req.body.status,
+    });
+    await existingFeedback.save();
+    res.status(200).json({ message: "Feedback updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
