@@ -12,15 +12,18 @@ interviewSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "job",
     },
-    link: {
-      type: String,
+    date:{
+      type: mongoose.Types.ObjectId,
     },
-    Date: {
-      type: Date,
-      required: true,
+    interviewLink:{
+      type:String,
     },
-    startTime: String,
-    endTime: String,
+    // Date: {
+    //   type: Date,
+    //   required: true,
+    // },
+    // startTime: String,
+    // endTime: String,
   },
   {
     timestamps: true,

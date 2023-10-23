@@ -1,21 +1,40 @@
 feebackSchema = new Schema(
   {
-    feebackDesc: {
-      type: String,
-    },
-
     employerId: {
       type: mongoose.Types.ObjectId,
       ref: "employer",
     },
     candidateId: {
       type: mongoose.Types.ObjectId,
-      ref: "candidate",
+      ref: "candidate", 
     },
+    interviewId:{
+     type:mongoose.Types.ObjectId,
+     ref:"interview"
+    },
+    history:[
+      {
+        date:{
+        type:String,
+        },
+        startTime:{
+         type: String
+        },
+        endTime:{
+          type:String,
+        },
+        remarks:{
+         type:String,
+        }
+      }
+    ],
     status: {
       type: String,
-      enum: ["in-process", "reject", "offer sent", "hire"],
+      enum: ["in-process", , "reschedule","reject", "offer sent", "hire"],
     },
+    isSubmitted:{
+      type:Boolean
+    }
   },
   {
     timestamps: true,

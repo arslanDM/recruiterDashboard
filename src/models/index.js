@@ -3,5 +3,6 @@ module.exports = {
   candidate: require("./candidate.model"),
   employer: require("./employer.model"),
   job:require("./job.model"),
-  interview :require("./interview.model")
+  interview :require("./interview.model"),
+  feedback:require("./feedback.model")
 };

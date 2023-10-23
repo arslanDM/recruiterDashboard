@@ -5,6 +5,7 @@ const candidateModel = require("../models").candidate;
 const jobModel = require("../models").job;
 const employerModel = require("../models").employer;
 const interviewModel = require("../models").interview;
+const feedbackModel = require("../models").feedback;
 const { encryptPassword, comparePassword } = require("../helper/bcrypt.helper");
 module.exports.getUser = async (req, res, next) => {
   const { user } = req;
@@ -75,19 +76,76 @@ module.exports.createEmployer = async (req, res, next) => {
   }
 };
 module.exports.createInterview = async (req, res, next) => {
+  const feedbackData = {
+    employerId: req.body.employerId,
+    candidateId: req.body.candidateId,
+    history: [
+      { 
+        date: req.body.feedbackSlot.date,
+        startTime: req.body.feedbackSlot.startTime,
+        endTime: req.body.feedbackSlot.endTime,
+        remarks: "",
+      },
+    ],
+    status: "in-process",
+    isSubmitted:false
+  };
+  // await jobModel.updateOne(
+  //   {
+  //     'dates._id': req.body.date,
+  //     'dates.timeSlots._id': req.body.selectedSlot,
+  //   },
+  //   {
+  //     $set: {
+  //       'dates.$.timeSlots.$.status': 'booked',
+  //     },
+  //   }
+  // );
+  await jobModel.updateOne(
+    {
+      'dates._id': req.body.date,
+      'dates.timeSlots._id': req.body.selectedSlot,
+    },
+    {
+      $set: {
+        'dates.$[outer].timeSlots.$[inner].status': 'booked',
+      },
+    },
+    {
+      arrayFilters: [
+        { 'outer._id': req.body.date },
+        { 'inner._id': req.body.selectedSlot },
+      ],
+    }
+  );
   try {
     const createInterview = await interviewModel.create(req.body);
-    if (createInterview) {
-      let message = "Interview Created Succefully";
-      return errorHelper.success(res, createInterview, message);
-    }
+    const feedbackCreate = await feedbackModel.create(feedbackData);
+    // const existingFeedback = await feedbackModel.findOne({
+    //   employerId: req.body.employerId,
+    //   candidateId: req.body.candidateId,
+    // });
+    // if (existingFeedback) {
+    //   existingFeedback.history.push({
+    //     date: req.body.feedbackSlot.date,
+    //     startTime: req.body.feedbackSlot.startTime,
+    //     endTime: req.body.feedbackSlot.endTime,
+    //     remarks: req.body.feedbackSlot.remarks,
+    //   });
+    //   existingFeedback.status='';  
+    //   await feedbackModel.save(existingFeedback);
+    // } else {
+      if (createInterview && feedbackCreate) {
+        let message = "Interview Created Succefully";
+        return errorHelper.success(res, createInterview, message);
+      }
+    //}
   } catch (error) {
     next(error);
   }
 };
 module.exports.createJob = async (req, res, next) => {
   try {
-    console.log(req.body);
     const createJob = await jobModel.create(req.body);
 
     if (createJob) {
