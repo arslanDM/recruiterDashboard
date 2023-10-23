@@ -7,6 +7,7 @@ const employerModel = require("../models").employer;
 const interviewModel = require("../models").interview;
 const feedbackModel = require("../models").feedback;
 const { encryptPassword, comparePassword } = require("../helper/bcrypt.helper");
+const {sendEmail} = require("./../helper/mail.helper");
 module.exports.getUser = async (req, res, next) => {
   const { user } = req;
   try {
@@ -39,7 +40,7 @@ module.exports.createUser = async (req, res, next) => {
     let message = "User Created Succefully";
     return errorHelper.success(res, newUser, message);
   } catch (error) {
-    next(error);
+    next(error);  
   }
 };
 module.exports.createCandidate = async (req, res, next) => {
@@ -80,7 +81,7 @@ module.exports.createInterview = async (req, res, next) => {
     employerId: req.body.employerId,
     candidateId: req.body.candidateId,
     history: [
-      { 
+      {
         date: req.body.feedbackSlot.date,
         startTime: req.body.feedbackSlot.startTime,
         endTime: req.body.feedbackSlot.endTime,
@@ -88,39 +89,33 @@ module.exports.createInterview = async (req, res, next) => {
       },
     ],
     status: "in-process",
-    isSubmitted:false
+    isSubmitted: false,
   };
-  // await jobModel.updateOne(
-  //   {
-  //     'dates._id': req.body.date,
-  //     'dates.timeSlots._id': req.body.selectedSlot,
-  //   },
-  //   {
-  //     $set: {
-  //       'dates.$.timeSlots.$.status': 'booked',
-  //     },
-  //   }
-  // );
+  const candidate = await candidateModel.findById(req.body.candidateId).lean();
+
+  const employer = await employerModel.findById(req.body.employerId).lean();
+
   await jobModel.updateOne(
-    {
-      'dates._id': req.body.date,
-      'dates.timeSlots._id': req.body.selectedSlot,
+    { 
+      "dates._id": req.body.date,
+      "dates.timeSlots._id": req.body.selectedSlot,
     },
     {
       $set: {
-        'dates.$[outer].timeSlots.$[inner].status': 'booked',
+        "dates.$[outer].timeSlots.$[inner].status": "booked",
       },
     },
     {
       arrayFilters: [
-        { 'outer._id': req.body.date },
-        { 'inner._id': req.body.selectedSlot },
+        { "outer._id": req.body.date },
+        { "inner._id": req.body.selectedSlot },
       ],
     }
   );
   try {
     const createInterview = await interviewModel.create(req.body);
     const feedbackCreate = await feedbackModel.create(feedbackData);
+    const feedbackId=feedbackCreate._id;
     // const existingFeedback = await feedbackModel.findOne({
     //   employerId: req.body.employerId,
     //   candidateId: req.body.candidateId,
@@ -132,13 +127,20 @@ module.exports.createInterview = async (req, res, next) => {
     //     endTime: req.body.feedbackSlot.endTime,
     //     remarks: req.body.feedbackSlot.remarks,
     //   });
-    //   existingFeedback.status='';  
+    //   existingFeedback.status='';
     //   await feedbackModel.save(existingFeedback);
     // } else {
-      if (createInterview && feedbackCreate) {
-        let message = "Interview Created Succefully";
-        return errorHelper.success(res, createInterview, message);
-      }
+    if (createInterview && feedbackCreate) {
+      const interviewDetails = {
+        date: req.body.feedbackSlot.date,
+        startTime: req.body.feedbackSlot.startTime,
+        endTime: req.body.feedbackSlot.endTime,
+        interViewLink:req.body.interviewLink
+      };
+      sendEmail(candidate.email, employer.email ,interviewDetails,feedbackId);
+      let message = "Interview Created Succefully";
+      return errorHelper.success(res, createInterview, message);
+    }
     //}
   } catch (error) {
     next(error);
