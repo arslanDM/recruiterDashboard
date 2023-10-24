@@ -234,7 +234,7 @@ module.exports.getJob = async (req, res, next) => {
 module.exports.getJobById=async(req,res,next)=>{
   try{
    const id=req.params.id;
-    const jobById=await jobModel.findOne({_id:id}).lean();
+    const jobById=await jobModel.findOne({_id:id}).populate("employerId").lean();
     return errorHelper.success(res, jobById);
   }
   catch(error){
