@@ -158,6 +158,19 @@ module.exports.getFeedbackbyId=async(req,res,next)=>{
     next(error);
   }
 };
+module.exports.getAllInterview=async(req,res,next)=>{
+  try {
+    const interview = await interviewModel
+      .findOne({})
+      .populate("employerId")
+      .populate("candidateId")
+      .lean();
+      console.log(interview)
+    return errorHelper.success(res, interview);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports.createJob = async (req, res, next) => {
   try {
     const createJob = await jobModel.create(req.body);
@@ -218,7 +231,16 @@ module.exports.getJob = async (req, res, next) => {
 };
 
 //create Interview
-
+module.exports.getJobById=async(req,res,next)=>{
+  try{
+   const id=req.params.id;
+    const jobById=await jobModel.findOne({_id:id}).lean();
+    return errorHelper.success(res, jobById);
+  }
+  catch(error){
+  next(error);
+  }
+}
 //remove profile
 module.exports.deleteProfile = async (req, res, next) => {
   try {

@@ -6,7 +6,7 @@ interviewSchema = new Schema(
     },
     candidateId: {
       type: mongoose.Types.ObjectId,
-      ref: "candidate",
+      ref: "Candidate",
     },
     jobId: {
       type: mongoose.Types.ObjectId,
@@ -18,12 +18,7 @@ interviewSchema = new Schema(
     interviewLink:{
       type:String,
     },
-    // Date: {
-    //   type: Date,
-    //   required: true,
-    // },
-    // startTime: String,
-    // endTime: String,
+
   },
   {
     timestamps: true,

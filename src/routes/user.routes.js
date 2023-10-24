@@ -32,9 +32,11 @@ router.get("/getStaff",controller.getStaff);
 router.get("/getCandidate", controller.getCandidate);
 router.get("/getEmployer",controller.getEmployer);
 router.get("/getJob",controller.getJob)
+router.get("/getJob/:id",controller.getJobById)
 router.get("/", controller.getUser);
 router.get("/feedback",controller.getAllFeedback);
 router.get("/getFeedbackbyId/:id",controller.getFeedbackbyId);
-
+router.get("/getAllInterview",controller.getAllInterview)
 router.delete("/deleteProfile/:id", controller.deleteProfile);
 module.exports = { prefix: "user", router };
+    
