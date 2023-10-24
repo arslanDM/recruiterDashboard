@@ -77,21 +77,19 @@ module.exports.createEmployer = async (req, res, next) => {
   }
 };
 module.exports.createInterview = async (req, res, next) => {
- 
   const feedbackData = {
-        date: req.body.feedback.date,
-        startTime: req.body.feedback.startTime,
-        endTime: req.body.feedback.endTime,
-        remarks: req.body.feedback.remarks,
-        status: req.body.feedback.status,
-        isSubmitted: false
-  }
+    date: req.body.feedback.date,
+    startTime: req.body.feedback.startTime,
+    endTime: req.body.feedback.endTime,
+    remarks: req.body.feedback.remarks,
+    status: req.body.feedback.status,
+    isSubmitted: false,
+  };
 
- // const candidate = await candidateModel.findOne({_id:req.body.candidateId}).lean();
-  
+  const candidate = await candidateModel.findById(req.body.candidateId).lean();
 
-  //const employer = await employerModel.findById(req.body.employerId).lean();
-  
+  const employer = await employerModel.findById(req.body.employerId).lean();
+
   await jobModel.updateOne(
     {
       "dates._id": req.body.date,
@@ -112,7 +110,7 @@ module.exports.createInterview = async (req, res, next) => {
   try {
     const createInterviewData = {
       ...req.body,
-      feedback: feedbackData
+      feedback: feedbackData,
     };
     const createInterview = await interviewModel.create(createInterviewData);
     //const feedbackCreate = await feedbackModel.create(feedbackData);
@@ -145,11 +143,11 @@ module.exports.getAllFeedback = async (req, res, next) => {
     next(error);
   }
 };
-module.exports.getFeedbackbyId=async(req,res,next)=>{
+module.exports.getFeedbackbyId = async (req, res, next) => {
   try {
-    const id=req.params.id;
+    const id = req.params.id;
     const feedbackById = await feedbackModel
-      .findOne({'_id':id})
+      .findOne({ _id: id })
       .populate("employerId")
       .populate("candidateId")
       .lean();
@@ -158,7 +156,7 @@ module.exports.getFeedbackbyId=async(req,res,next)=>{
     next(error);
   }
 };
-module.exports.getAllInterview=async(req,res,next)=>{
+module.exports.getAllInterview = async (req, res, next) => {
   try {
     const interview = await interviewModel
       .findOne({})
@@ -170,20 +168,19 @@ module.exports.getAllInterview=async(req,res,next)=>{
     next(error);
   }
 };
-module.exports.getInterViewByJobId=async(req,res,next)=>{
-  try{
-   const jobId=req.params.id;
-   const intervievByJobId = await interviewModel
-   .find({ jobId })
-   .populate('employerId')
-   .populate('candidateId')
-   .lean();
-   return errorHelper.success(res, intervievByJobId);
-  }
-  catch(error){
+module.exports.getInterViewByJobId = async (req, res, next) => {
+  try {
+    const jobId = req.params.id;
+    const intervievByJobId = await interviewModel
+      .find({ jobId })
+      .populate("employerId")
+      .populate("candidateId")
+      .lean();
+    return errorHelper.success(res, intervievByJobId);
+  } catch (error) {
     next(error);
   }
-}
+};
 module.exports.createJob = async (req, res, next) => {
   try {
     const createJob = await jobModel.create(req.body);
@@ -244,16 +241,18 @@ module.exports.getJob = async (req, res, next) => {
 };
 
 //create Interview
-module.exports.getJobById=async(req,res,next)=>{
-  try{
-   const id=req.params.id;
-    const jobById=await jobModel.findOne({_id:id}).populate("employerId").lean();
+module.exports.getJobById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const jobById = await jobModel
+      .findOne({ _id: id })
+      .populate("employerId")
+      .lean();
     return errorHelper.success(res, jobById);
+  } catch (error) {
+    next(error);
   }
-  catch(error){
-  next(error);
-  }
-}
+};
 //remove profile
 module.exports.deleteProfile = async (req, res, next) => {
   try {
