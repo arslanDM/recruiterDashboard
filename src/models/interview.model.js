@@ -27,6 +27,7 @@ interviewSchema = new Schema(
         type: String,
         enum: ["in-process", , "reschedule", "reject", "offer sent", "hire"],
       },
+      isSubmitted:Boolean
     },
     interviewLink: {
       type: String,

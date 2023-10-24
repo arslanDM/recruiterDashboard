@@ -77,24 +77,21 @@ module.exports.createEmployer = async (req, res, next) => {
   }
 };
 module.exports.createInterview = async (req, res, next) => {
-  // const feedbackData = {
-  //   employerId: req.body.employerId,
-  //   candidateId: req.body.candidateId,
-  //   history: [
-  //     {
-  //       date: req.body.feedbackSlot.date,
-  //       startTime: req.body.feedbackSlot.startTime,
-  //       endTime: req.body.feedbackSlot.endTime,
-  //       remarks: "",
-  //       status: "in-process",
-  //     },
-  //   ],
+ 
+  const feedbackData = {
+        date: req.body.feedback.date,
+        startTime: req.body.feedback.startTime,
+        endTime: req.body.feedback.endTime,
+        remarks: req.body.feedback.remarks,
+        status: req.body.feedback.status,
+        isSubmitted: false
+  }
 
-  //   isSubmitted: false,
-  // };
-  const candidate = await candidateModel.findById(req.body.candidateId).lean();
+  const candidate = await candidateModel.findOne({_id:req.body.candidateId}).lean();
+  
 
   const employer = await employerModel.findById(req.body.employerId).lean();
+  
   await jobModel.updateOne(
     {
       "dates._id": req.body.date,
@@ -113,7 +110,12 @@ module.exports.createInterview = async (req, res, next) => {
     }
   );
   try {
-    const createInterview = await interviewModel.create(req.body);
+    const createInterviewData = {
+      ...req.body,
+      feedback: feedbackData
+    };
+    console.log(createInterviewData);
+    const createInterview = await interviewModel.create(createInterviewData);
     //const feedbackCreate = await feedbackModel.create(feedbackData);
     // const feedbackId = feedbackCreate._id;
 
