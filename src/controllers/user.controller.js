@@ -95,7 +95,6 @@ module.exports.createInterview = async (req, res, next) => {
   const candidate = await candidateModel.findById(req.body.candidateId).lean();
 
   const employer = await employerModel.findById(req.body.employerId).lean();
-
   await jobModel.updateOne(
     {
       "dates._id": req.body.date,
@@ -171,6 +170,20 @@ module.exports.getAllInterview=async(req,res,next)=>{
     next(error);
   }
 };
+module.exports.getInterViewByJobId=async(req,res,next)=>{
+  try{
+   const jobId=req.params.id;
+   const intervievByJobId = await interviewModel
+   .findOne({jobId})
+   .populate("employerId")
+   .populate("candidateId")
+   .lean();
+   return errorHelper.success(res, intervievByJobId);
+  }
+  catch(error){
+    next(error);
+  }
+}
 module.exports.createJob = async (req, res, next) => {
   try {
     const createJob = await jobModel.create(req.body);

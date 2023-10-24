@@ -4,6 +4,7 @@ const jobSchema = new Schema({
     ref: "employer", // Reference to an employer model
   },
   jobDescription: String,
+  jobPosition:String,
   dates: [
     {
       date: {

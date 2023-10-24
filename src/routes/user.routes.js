@@ -37,6 +37,6 @@ router.get("/", controller.getUser);
 router.get("/feedback",controller.getAllFeedback);
 router.get("/getFeedbackbyId/:id",controller.getFeedbackbyId);
 router.get("/getAllInterview",controller.getAllInterview)
+router.get("/getInterviewByjobId/:id",controller.getInterViewByJobId)
 router.delete("/deleteProfile/:id", controller.deleteProfile);
 module.exports = { prefix: "user", router };
-    
