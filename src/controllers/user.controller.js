@@ -82,7 +82,7 @@ module.exports.createInterview = async (req, res, next) => {
     startTime: req.body.feedback.startTime,
     endTime: req.body.feedback.endTime,
     remarks: req.body.feedback.remarks,
-    status: req.body.feedback.status,
+    status: 'in-process',
     isSubmitted: false,
   };
 
@@ -113,9 +113,6 @@ module.exports.createInterview = async (req, res, next) => {
       feedback: feedbackData,
     };
     const createInterview = await interviewModel.create(createInterviewData);
-    //const feedbackCreate = await feedbackModel.create(feedbackData);
-    // const feedbackId = feedbackCreate._id;
-
     if (createInterview) {
       const interviewDetails = {
         date: req.body.feedback.date,
