@@ -15,6 +15,9 @@ interviewSchema = new Schema(
     date:{
       type: mongoose.Types.ObjectId,
     },
+    selectedSlot:{
+      type:mongoose.Types.ObjectId
+    },
     interviewLink:{
       type:String,
     },

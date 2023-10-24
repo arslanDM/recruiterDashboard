@@ -164,7 +164,6 @@ module.exports.getAllInterview=async(req,res,next)=>{
       .populate("employerId")
       .populate("candidateId")
       .lean();
-      console.log(interview)
     return errorHelper.success(res, interview);
   } catch (error) {
     next(error);
@@ -174,9 +173,9 @@ module.exports.getInterViewByJobId=async(req,res,next)=>{
   try{
    const jobId=req.params.id;
    const intervievByJobId = await interviewModel
-   .findOne({jobId})
-   .populate("employerId")
-   .populate("candidateId")
+   .find({ jobId })
+   .populate('employerId')
+   .populate('candidateId')
    .lean();
    return errorHelper.success(res, intervievByJobId);
   }
