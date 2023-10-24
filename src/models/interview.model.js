@@ -12,26 +12,25 @@ interviewSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "job",
     },
-    date:{
+    date: {
       type: mongoose.Types.ObjectId,
     },
-    selectedSlot:{
-      type:mongoose.Types.ObjectId
+    selectedSlot: {
+      type: mongoose.Types.ObjectId,
     },
-    feedback:{
-      date:String,
-      startTime:String,
-      endTime:String,
-      remarks:String,
+    feedback: {
+      date: String,
+      startTime: String,
+      endTime: String,
+      remarks: String,
       status: {
         type: String,
         enum: ["in-process", , "reschedule", "reject", "offer sent", "hire"],
       },
     },
-    interviewLink:{
-      type:String,
+    interviewLink: {
+      type: String,
     },
-
   },
   {
     timestamps: true,

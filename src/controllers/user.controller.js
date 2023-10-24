@@ -115,7 +115,7 @@ module.exports.createInterview = async (req, res, next) => {
   try {
     const createInterview = await interviewModel.create(req.body);
     //const feedbackCreate = await feedbackModel.create(feedbackData);
-    const feedbackId = feedbackCreate._id;
+    // const feedbackId = feedbackCreate._id;
 
     if (createInterview) {
       const interviewDetails = {
