@@ -77,21 +77,21 @@ module.exports.createEmployer = async (req, res, next) => {
   }
 };
 module.exports.createInterview = async (req, res, next) => {
-  const feedbackData = {
-    employerId: req.body.employerId,
-    candidateId: req.body.candidateId,
-    history: [
-      {
-        date: req.body.feedbackSlot.date,
-        startTime: req.body.feedbackSlot.startTime,
-        endTime: req.body.feedbackSlot.endTime,
-        remarks: "",
-        status: "in-process",
-      },
-    ],
+  // const feedbackData = {
+  //   employerId: req.body.employerId,
+  //   candidateId: req.body.candidateId,
+  //   history: [
+  //     {
+  //       date: req.body.feedbackSlot.date,
+  //       startTime: req.body.feedbackSlot.startTime,
+  //       endTime: req.body.feedbackSlot.endTime,
+  //       remarks: "",
+  //       status: "in-process",
+  //     },
+  //   ],
 
-    isSubmitted: false,
-  };
+  //   isSubmitted: false,
+  // };
   const candidate = await candidateModel.findById(req.body.candidateId).lean();
 
   const employer = await employerModel.findById(req.body.employerId).lean();
@@ -114,10 +114,10 @@ module.exports.createInterview = async (req, res, next) => {
   );
   try {
     const createInterview = await interviewModel.create(req.body);
-    const feedbackCreate = await feedbackModel.create(feedbackData);
+    //const feedbackCreate = await feedbackModel.create(feedbackData);
     const feedbackId = feedbackCreate._id;
 
-    if (createInterview && feedbackCreate) {
+    if (createInterview) {
       const interviewDetails = {
         date: req.body.feedbackSlot.date,
         startTime: req.body.feedbackSlot.startTime,

@@ -18,6 +18,16 @@ interviewSchema = new Schema(
     selectedSlot:{
       type:mongoose.Types.ObjectId
     },
+    feedback:{
+      date:String,
+      startTime:String,
+      endTime:String,
+      remarks:String,
+      status: {
+        type: String,
+        enum: ["in-process", , "reschedule", "reject", "offer sent", "hire"],
+      },
+    },
     interviewLink:{
       type:String,
     },
