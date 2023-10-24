@@ -87,10 +87,10 @@ module.exports.createInterview = async (req, res, next) => {
         isSubmitted: false
   }
 
-  const candidate = await candidateModel.findOne({_id:req.body.candidateId}).lean();
+ // const candidate = await candidateModel.findOne({_id:req.body.candidateId}).lean();
   
 
-  const employer = await employerModel.findById(req.body.employerId).lean();
+  //const employer = await employerModel.findById(req.body.employerId).lean();
   
   await jobModel.updateOne(
     {
@@ -114,16 +114,15 @@ module.exports.createInterview = async (req, res, next) => {
       ...req.body,
       feedback: feedbackData
     };
-    console.log(createInterviewData);
     const createInterview = await interviewModel.create(createInterviewData);
     //const feedbackCreate = await feedbackModel.create(feedbackData);
     // const feedbackId = feedbackCreate._id;
 
     if (createInterview) {
       const interviewDetails = {
-        date: req.body.feedbackSlot.date,
-        startTime: req.body.feedbackSlot.startTime,
-        endTime: req.body.feedbackSlot.endTime,
+        date: req.body.feedback.date,
+        startTime: req.body.feedback.startTime,
+        endTime: req.body.feedback.endTime,
         interViewLink: req.body.interviewLink,
       };
       sendEmail(candidate.email, employer.email, interviewDetails, feedbackId);
