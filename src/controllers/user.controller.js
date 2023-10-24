@@ -123,7 +123,7 @@ module.exports.createInterview = async (req, res, next) => {
         endTime: req.body.feedback.endTime,
         interViewLink: req.body.interviewLink,
       };
-      sendEmail(candidate.email, employer.email, interviewDetails, feedbackId);
+      sendEmail(candidate.email, employer.email, interviewDetails, createInterview._id);
       let message = "Interview Created Succefully";
       return errorHelper.success(res, createInterview, message);
     }
