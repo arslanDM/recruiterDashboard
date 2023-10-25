@@ -112,17 +112,18 @@ module.exports.createInterview = async (req, res, next) => {
       ...req.body,
       feedback: feedbackData,
     };
+    
+    const createInterview = await interviewModel.create(createInterviewData);
     const newFeedBackCreate={
       employerId:req.body.employerId,
       candidateId:req.body.candidateId,
-      interviewId:req.body.interviewId,
+      interviewId:createInterview._id,
       date:req.body.feedback.date,
       startTime:req.body.feedback.startTime,
       endTime:req.body.feedback.endTime,
       timeZone:req.body.feedback.timeZone,
       status:'in-process'
-    }
-    const createInterview = await interviewModel.create(createInterviewData);
+    }           
      const feedbackCreate = await feedbackModel.create(newFeedBackCreate);
     if (createInterview &&  feedbackCreate) {
       const interviewDetails = {
