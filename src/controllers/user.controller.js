@@ -112,8 +112,19 @@ module.exports.createInterview = async (req, res, next) => {
       ...req.body,
       feedback: feedbackData,
     };
+    const newFeedBackCreate={
+      employerId:req.body.employerId,
+      candidateId:req.body.candidateId,
+      interviewId:req.body.interviewId,
+      date:req.body.feedback.date,
+      startTime:req.body.feedback.startTime,
+      endTime:req.body.feedback.endTime,
+      timeZone:req.body.feedback.timeZone,
+      status:'in-process'
+    }
     const createInterview = await interviewModel.create(createInterviewData);
-    if (createInterview) {
+     const feedbackCreate = await feedbackModel.create(newFeedBackCreate);
+    if (createInterview &&  feedbackCreate) {
       const interviewDetails = {
         date: req.body.feedback.date,
         startTime: req.body.feedback.startTime,
@@ -140,15 +151,13 @@ module.exports.getAllFeedback = async (req, res, next) => {
     next(error);
   }
 };
-module.exports.getFeedbackbyId = async (req, res, next) => {
+module.exports.getFeedbackbyInterviewId = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const feedbackById = await feedbackModel
-      .findOne({ _id: id })
-      .populate("employerId")
-      .populate("candidateId")
+    const feedbacksById = await feedbackModel
+      .find({ interviewId:id })
       .lean();
-    return errorHelper.success(res, feedbackById);
+    return errorHelper.success(res, feedbacksById);
   } catch (error) {
     next(error);
   }

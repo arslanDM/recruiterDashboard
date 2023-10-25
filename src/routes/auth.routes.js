@@ -24,5 +24,6 @@ router.post(
   controller.resetPassword
 );
 router.get("/status-tracking/:id", controller.getFeedbackById);
-router.post("/createFeedback/:id",controller.createFeedback)
+router.post("/createFeedback/:id",controller.createFeedback);
+router.put("/updateInterviewCreateFeedback/:id",controller.updateInterviewCreateFeedback);
 module.exports = { prefix: "auth", router };

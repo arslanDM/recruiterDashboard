@@ -12,9 +12,6 @@ feebackSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "interview",
     },
-   
-    history: [
-      {
         date: {
           type: String,
         },
@@ -31,15 +28,14 @@ feebackSchema = new Schema(
           type: String,
           enum: ["in-process", , "reschedule", "reject", "offer sent", "hire"],
         },
-      },
-    ],
+     
 
     isSubmitted: {
       type: Boolean,
     },
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 

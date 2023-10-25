@@ -5,6 +5,7 @@ const userModel = require("../models").user;
 const { sendEmail } = require("../helper/mail.helper");
 const { async } = require("fast-glob");
 const feedbackModel = require("../models/feedback.model");
+const interviewModel = require("../models/interview.model");
 const candidateModel = require("../models").candidate;
 const employerModel = require("../models").employer;
 module.exports.signUp = async (req, res, next) => {
@@ -113,7 +114,7 @@ module.exports.resetPassword = async (req, res, next) => {
 module.exports.getFeedbackById = async (req, res, next) => {
   try {
     const feedbackId = req.params.id;
-    const feedback = await feedbackModel.findById(feedbackId).lean();
+    const feedback = await interviewModel.findById(feedbackId).lean();
     const { candidateId, employerId } = feedback;
     const candidate = await candidateModel
       .findById(candidateId)
@@ -139,7 +140,9 @@ module.exports.getFeedbackById = async (req, res, next) => {
 };
 module.exports.createFeedback = async (req, res, next) => {
   try {
-    const existingFeedback = await feedbackModel.findOne({ _id: req.params.id });
+    const existingFeedback = await feedbackModel.findOne({
+      _id: req.params.id,
+    });
 
     if (!existingFeedback) {
       let message = "Feedback Not exist";
@@ -154,6 +157,50 @@ module.exports.createFeedback = async (req, res, next) => {
     });
     await existingFeedback.save();
     res.status(200).json({ message: "Feedback updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports.updateInterviewCreateFeedback = async (req, res, next) => {
+  try {
+    const interviewId = req.params.id;
+    const newStatus = req.body.status;
+
+    if (newStatus === "reschedule") {
+      const updatedFeedback = {
+        date: req.body.date,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        status: newStatus,
+        isSubmitted: true,
+        interviewLink: req.body.interviewLink,
+      };
+      await interviewModel.findOneAndUpdate(
+        { _id: interviewId },
+        { $set: { feedback: updatedFeedback } },
+        { new: true }
+      );
+
+      const newFeedbackCreate = {
+        ...req.body,
+        status: newStatus,
+      };
+      const historyFeedback = await feedbackModel.create(newFeedbackCreate);
+    } else if (newStatus === "hire" || newStatus === "reject") {
+      await interviewModel.findOneAndUpdate(
+        { _id: interviewId },
+        { $set: { 'feedback.status': newStatus } }
+      );
+
+      const newFeedbackCreate = {
+        ...req.body,
+        status: newStatus,
+      };
+      const historyFeedback = await feedbackModel.create(newFeedbackCreate);
+    }
+
+    let message = "Interview Reschedule";
+    return errorHelper.success(res, message);
   } catch (error) {
     next(error);
   }

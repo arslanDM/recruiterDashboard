@@ -35,7 +35,7 @@ router.get("/getJob",controller.getJob)
 router.get("/getJob/:id",controller.getJobById)
 router.get("/", controller.getUser);
 router.get("/feedback",controller.getAllFeedback);
-router.get("/getFeedbackbyId/:id",controller.getFeedbackbyId);
+router.get("/getFeedbackbyInterviewId/:id",controller.getFeedbackbyInterviewId);
 router.get("/getAllInterview",controller.getAllInterview)
 router.get("/getInterviewByjobId/:id",controller.getInterViewByJobId)
 router.delete("/deleteProfile/:id", controller.deleteProfile);
