@@ -38,5 +38,6 @@ router.get("/feedback",controller.getAllFeedback);
 router.get("/getFeedbackbyInterviewId/:id",controller.getFeedbackbyInterviewId);
 router.get("/getAllInterview",controller.getAllInterview)
 router.get("/getInterviewByjobId/:id",controller.getInterViewByJobId)
+router.get("/rescheduleInterview/:id",controller.rescheduleInterview)
 router.delete("/deleteProfile/:id", controller.deleteProfile);
 module.exports = { prefix: "user", router };

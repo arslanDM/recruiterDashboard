@@ -26,17 +26,18 @@ module.exports.sendEmail = async (
       pass: process.env.EMAIL_PASSWORD,
     },
   });
-  const emailToEmployer = {
+  const emailToCandidate = {
     from: process.env.EMAIL_USERNAME,
-    to: employerEmail,
+    to: candidateEmail,
     subject: "Hello from hiring team",
     text: "Message from hiring team",
     html: `Click <a href="${process.env.RESET_URL_LOCAL}/${feedbackId}">here</a> click to give feedback to candidate.
     ${emailContent}`,
   };
-  const emailToCandidate = {
+  const emailToEmployer = {
     from: process.env.EMAIL_USERNAME,
-    to: candidateEmail,
+   
+    to: employerEmail,
     subject: "Hello from hiring team",
     text: "Message from hiring team",
     html: emailContent,

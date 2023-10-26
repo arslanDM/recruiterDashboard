@@ -82,7 +82,7 @@ module.exports.createInterview = async (req, res, next) => {
     startTime: req.body.feedback.startTime,
     endTime: req.body.feedback.endTime,
     remarks: req.body.feedback.remarks,
-    status: 'in-process',
+    status: "in-process",
     isSubmitted: false,
   };
 
@@ -112,27 +112,32 @@ module.exports.createInterview = async (req, res, next) => {
       ...req.body,
       feedback: feedbackData,
     };
-    
+
     const createInterview = await interviewModel.create(createInterviewData);
-    const newFeedBackCreate={
-      employerId:req.body.employerId,
-      candidateId:req.body.candidateId,
-      interviewId:createInterview._id,
-      date:req.body.feedback.date,
-      startTime:req.body.feedback.startTime,
-      endTime:req.body.feedback.endTime,
-      timeZone:req.body.feedback.timeZone,
-      status:'in-process'
-    }           
-     const feedbackCreate = await feedbackModel.create(newFeedBackCreate);
-    if (createInterview &&  feedbackCreate) {
+    const newFeedBackCreate = {
+      employerId: req.body.employerId,
+      candidateId: req.body.candidateId,
+      interviewId: createInterview._id,
+      date: req.body.feedback.date,
+      startTime: req.body.feedback.startTime,
+      endTime: req.body.feedback.endTime,
+      timeZone: req.body.feedback.timeZone,
+      status: "in-process",
+    };
+    const feedbackCreate = await feedbackModel.create(newFeedBackCreate);
+    if (createInterview && feedbackCreate) {
       const interviewDetails = {
         date: req.body.feedback.date,
         startTime: req.body.feedback.startTime,
         endTime: req.body.feedback.endTime,
         interViewLink: req.body.interviewLink,
       };
-      sendEmail(candidate.email, employer.email, interviewDetails, createInterview._id);
+      sendEmail(
+        candidate.email,
+        employer.email,
+        interviewDetails,
+        createInterview._id
+      );
       let message = "Interview Created Succefully";
       return errorHelper.success(res, createInterview, message);
     }
@@ -156,7 +161,8 @@ module.exports.getFeedbackbyInterviewId = async (req, res, next) => {
   try {
     const id = req.params.id;
     const feedbacksById = await feedbackModel
-      .find({ interviewId:id })
+      .find({ interviewId: id })
+      .populate("employerId").populate("candidateId")
       .lean();
     return errorHelper.success(res, feedbacksById);
   } catch (error) {
@@ -216,6 +222,35 @@ module.exports.getCandidate = async (req, res, next) => {
     if (getCandidate) {
       return errorHelper.success(res, getCandidate);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports.rescheduleInterview = async (req, res, next) => {
+  try {
+    const interviewId = req.params.id;
+    const interviewRescdule = await interviewModel
+      .findOne({ _id: interviewId })
+      .populate("employerId")
+      .populate("candidateId");
+    const interviewDetails = {
+      date: interviewRescdule.feedback.date,
+      startTime: interviewRescdule.feedback.startTime,
+      endTime: interviewRescdule.feedback.endTime,
+      interViewLink: interviewRescdule.interViewLink,
+    };
+    sendEmail(
+      interviewRescdule.candidateId.email,
+      interviewRescdule.employerId.email,
+      interviewDetails,
+      interviewId
+    );
+    await interviewModel.updateOne(
+      { _id: interviewId },
+      { $set: { "feedback.status": "reschedule" ,"feedback.isSubmitted":false} }
+    );
+    let message = "Interview Rescdule Created Succefully";
+    return errorHelper.success(res, "", message);
   } catch (error) {
     next(error);
   }

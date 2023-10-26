@@ -124,10 +124,11 @@ module.exports.getFeedbackById = async (req, res, next) => {
       .findById(employerId)
       .select("name")
       .lean();
-    const feedbackStatus = await feedbackModel
+    const feedbackStatus = await interviewModel
       .findById(feedbackId)
-      .select("status isSubmitted")
+      .select("feedback.status feedback.isSubmitted")
       .lean();
+
     const response = {
       candidate,
       employer,
@@ -165,7 +166,6 @@ module.exports.updateInterviewCreateFeedback = async (req, res, next) => {
   try {
     const interviewId = req.params.id;
     const newStatus = req.body.status;
-
     if (newStatus === "reschedule") {
       const updatedFeedback = {
         date: req.body.date,
@@ -183,26 +183,27 @@ module.exports.updateInterviewCreateFeedback = async (req, res, next) => {
 
       const newFeedbackCreate = {
         ...req.body,
+        interviewId: interviewId,
         status: newStatus,
       };
+
       const historyFeedback = await feedbackModel.create(newFeedbackCreate);
     } else if (newStatus === "hire" || newStatus === "reject") {
       await interviewModel.findOneAndUpdate(
         { _id: interviewId },
-        { $set: { 'feedback.status': newStatus } }
+        { $set: { "feedback.status": newStatus, "feedback.isSubmitted":true } }
       );
 
       const newFeedbackCreate = {
         ...req.body,
+        interviewId: interviewId,
         status: newStatus,
       };
       const historyFeedback = await feedbackModel.create(newFeedbackCreate);
     }
-
     let message = "Interview Reschedule";
     return errorHelper.success(res, message);
   } catch (error) {
     next(error);
   }
 };
-

@@ -25,5 +25,5 @@ router.post(
 );
 router.get("/status-tracking/:id", controller.getFeedbackById);
 router.post("/createFeedback/:id",controller.createFeedback);
-router.put("/updateInterviewCreateFeedback/:id",controller.updateInterviewCreateFeedback);
+router.patch("/updateInterviewCreateFeedback/:id",controller.updateInterviewCreateFeedback);
 module.exports = { prefix: "auth", router };
